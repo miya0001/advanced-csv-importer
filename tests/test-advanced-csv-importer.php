@@ -2,25 +2,13 @@
 
 class AdvancedImporter_Test extends WP_UnitTestCase {
 
-	public function testSample() {
-		// replace this with some actual testing code
-		$this->assertTrue( true );
-	}
-
 	/**
 	 * @test
 	 */
-	public function csv_file()
+	public function parser()
 	{
-		$csv = new Keboola\Csv\CsvFile( dirname( __FILE__ ) . '/_data/simple.csv' );
-
-		$data = array();
-		foreach ( $csv as $row ) {
-			$this->assertEquals( 2, count( $row ) ); // 3 columns
-			$data[] = $row;
-		}
-
-		$this->assertEquals( 4, count( $data ) ); // 3 rows
+		$data = \ACSV\Utils::parser( dirname( __FILE__ ) . '/_data/escaping.csv' );
+		$this->assertTrue( is_array( $data ) );
 	}
 
 	/**

@@ -9,7 +9,7 @@
     ],
     "require": {
         "php" : ">=5.3.2",
-        "keboola/csv": "1.1.*"
+        "goodby/csv": "*"
     },
     "autoload": {
         "psr-0": {"ACSV": "lib"}
