@@ -52,7 +52,7 @@ class Utils {
 	 * @return array Returns the array from csv.
 	 * @since  0.1.0
 	 */
-	private static function parser( $csv_file, $charset = 'UTF-8' )
+	public static function csv_parser( $csv_file, $charset = 'UTF-8' )
 	{
 		if ( ! is_file( $csv_file ) ) {
 			return new WP_Error( 'error', 'The CSV file is not found.' );
@@ -84,9 +84,9 @@ class Utils {
 	 * @return array Returns the array from csv.
 	 * @since  0.1.0
 	 */
-	public static function csv_parser( $csv_file, $charset = 'UTF-8' )
+	public static function get_data( $csv_file, $charset = 'UTF-8' )
 	{
-		$csv = self::parser( $csv_file, $charset );
+		$csv = self::csv_parser( $csv_file, $charset );
 
 		if ( is_wp_error( $csv ) ) {
 			return $csv;

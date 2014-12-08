@@ -6,7 +6,7 @@ Description: PLUGIN DESCRIPTION HERE
 Author: YOUR NAME HERE
 Author URI: YOUR SITE HERE
 Plugin URI: PLUGIN SITE HERE
-Text Domain: advanced-importer
+Text Domain: advanced-csv-importer
 Domain Path: /languages
 */
 
