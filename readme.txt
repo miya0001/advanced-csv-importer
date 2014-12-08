@@ -1,4 +1,4 @@
-=== Advanced Importer ===
+=== Advanced CSV Importer ===
 Contributors: miyauchi, megumithemes
 Tags: comments, spam
 Requires at least: 4.0

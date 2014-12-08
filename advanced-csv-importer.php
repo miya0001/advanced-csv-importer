@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Advanced Importer
+Plugin Name: Advanced CSV Importer
 Version: 0.1.0
 Description: PLUGIN DESCRIPTION HERE
 Author: YOUR NAME HERE
