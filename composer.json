@@ -1,0 +1,17 @@
+{
+    "name": "miya0001/advanced-importer",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Takayuki Miyauchi",
+            "email": "miyauchi@digitalcube.jp"
+        }
+    ],
+    "require": {
+        "php" : ">=5.3.2",
+        "keboola/csv": "1.1.*"
+    },
+    "autoload": {
+        "psr-0": {"ACSV": "lib"}
+    }
+}
