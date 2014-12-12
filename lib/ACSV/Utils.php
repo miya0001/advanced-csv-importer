@@ -52,7 +52,7 @@ class Utils {
 	 * @return array Returns the array from csv.
 	 * @since  0.1.0
 	 */
-	public static function csv_parser( $csv_file, $charset = 'UTF-8' )
+	public static function csv_parser( $csv_file )
 	{
 		if ( ! is_file( $csv_file ) ) {
 			return new WP_Error( 'error', 'The CSV file is not found.' );
@@ -62,8 +62,20 @@ class Utils {
 
 		$csv = array();
 
+		$format = apply_filters( 'advanced_csv_importer_csv_format', array(
+			'from_charset' => 'UTF-8',
+			'to_charset'   => 'UTF-8',
+			'delimiter'    => ',',
+			'enclosure'    => '"',
+			'escape'       => '\\',
+		) );
+
 		$config = new LexerConfig();
-		$config->setFromCharset( $charset );
+		$config->setFromCharset( $format['from_charset'] );
+		$config->setToCharset( $format['to_charset'] );
+		$config->setDelimiter( $format['delimiter'] );
+		$config->setEnclosure( $format['enclosure'] );
+		$config->setEscape( $format['escape'] );
 
 		$lexer = new Lexer( $config );
 
@@ -84,9 +96,9 @@ class Utils {
 	 * @return array Returns the array from csv.
 	 * @since  0.1.0
 	 */
-	public static function get_data( $csv_file, $charset = 'UTF-8' )
+	public static function csv_to_hash_array( $csv_file )
 	{
-		$csv = self::csv_parser( $csv_file, $charset );
+		$csv = self::csv_parser( $csv_file );
 
 		if ( is_wp_error( $csv ) ) {
 			return $csv;
