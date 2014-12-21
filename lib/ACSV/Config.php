@@ -26,8 +26,12 @@ class Config {
 		'comment_status',
 		'post_category',
 		'tags_input',
-		'tax_input',
 		'page_template',
+	);
+
+	private static $post_defaults = array(
+		'post_status' => 'publish',
+		'post_type'   => 'post',
 	);
 
 	/**
@@ -63,7 +67,7 @@ class Config {
 	}
 
 	/**
-	* Returns the is it textfile or not.
+	* Returns the post object keys.
 	*
 	* @param  none
 	* @return array Returns post object keys for wp_insert_post() as array.
@@ -84,5 +88,22 @@ class Config {
 		 * @param array $post_object_keys The post object keys.
 		 */
 		return apply_filters( "advanced_csv_importer_post_object_keys", $post_object_keys );
+	}
+
+	/**
+	* Returns the post defaults.
+	*
+	* @param  none
+	* @return array Returns the post defaults.
+	* @since  0.1.0
+	*/
+	public static function get_post_defaults()
+	{
+		/**
+		* Filter the post defaults.
+		*
+		* @param array $post_defaults The post defaults.
+		*/
+		return apply_filters( "advanced_csv_importer_post_defaults", self::$post_defaults );
 	}
 }

@@ -14,18 +14,43 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_object_03()
+	public function insert_posts()
 	{
-		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
-		$this->assertSame( 4, count( $post_object ) );
-		$this->assertSame( 1, count( $post_object[0]['post_category'] ) );
-		$this->assertSame( 2, count( $post_object[0]['tags_input'] ) );
+		$post_objects = ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$inserted_posts = ACSV\Utils::insert_posts( $post_objects );
+		$this->assertSame( 4, count( $inserted_posts ) );
+
+		for ( $i = 0; $i < count( $post_objects ); $i++ ) {
+			if ( is_wp_error( $inserted_posts[ $i ] ) ) {
+				continue;
+			}
+
+			$post = $post_objects[ $i ];
+			$p = get_post( $inserted_posts[ $i ] );
+
+			if ( $post['post_name'] ) {
+				$this->assertSame( $p->post_name, strtolower( $post['post_name'] ) );
+			}
+			$this->assertSame( $p->post_title, $post['post_title'] );
+			$this->assertSame( $p->post_content, $post['post_content'] );
+		}
 	}
 
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_object_02()
+	public function parse_csv_to_post_objects_03()
+	{
+		$post_objects = ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$this->assertSame( 4, count( $post_objects ) );
+		$this->assertSame( 1, count( $post_objects[0]['post_category'] ) );
+		$this->assertSame( 2, count( $post_objects[0]['tags_input'] ) );
+	}
+
+	/**
+	* @test
+	*/
+	public function parse_csv_to_post_objects_02()
 	{
 		add_filter( 'advanced_csv_importer_post_object_keys', function(){
 			return array(
@@ -34,19 +59,19 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			);
 		} );
 
-		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
-		$this->assertSame( "0", $post_object[1]['post_title'] );
-		$this->assertSame( "19", $post_object[2]['ID'] );
+		$post_objects = ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$this->assertSame( "0", $post_objects[1]['post_title'] );
+		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
 
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_object_01()
+	public function parse_csv_to_post_objects_01()
 	{
-		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
-		$this->assertSame( "0", $post_object[1]['post_meta']['isImported'] );
-		$this->assertSame( "19", $post_object[2]['ID'] );
+		$post_objects = ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$this->assertSame( "0", $post_objects[1]['post_meta']['isImported'] );
+		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
 
 	/**

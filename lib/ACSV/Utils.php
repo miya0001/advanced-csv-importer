@@ -43,13 +43,73 @@ class Utils {
 	}
 
 	/**
+	* Insert posts
+	*
+	* @param  string $post_objects    Path of the file.
+	* @return mixed  True or WP_Eroor object.
+	* @since  0.1.0
+	*/
+	public static function insert_posts( $post_objects )
+	{
+		$inserted_posts = array();
+
+		foreach ( $post_objects as $post ) {
+
+			// unset all empty fields
+			foreach ( $post as $key => $value ) {
+				if ( ! is_array( $value ) && ! strlen( $value ) ) {
+					unset( $post[ $key ] );
+				} elseif ( is_array( $value ) && ! count( $value ) ) {
+					unset( $post[ $key ] );
+				}
+			}
+
+			// insert and set category
+			if ( isset( $post['post_category'] ) && is_array( $post['post_category'] )
+						&& count( $post['post_category'] ) ) {
+				$post['post_category'] = wp_create_categories( $post['post_category'] );
+			}
+
+			if ( isset( $post['post_date'] ) && $post['post_date'] ) {
+				$post['post_date'] = date( "Y-m-d H:i:s", strtotime( $post['post_date'] ) );
+			}
+
+			// setup author
+			if ( isset( $post['post_author'] ) && ! intval( $post['post_author'] ) ) {
+				$u = get_user_by( 'login', $post['post_author'] );
+				if ( $u ) {
+					$post['post_author'] = $u->ID;
+				} else {
+					unset( $post['post_author'] );
+				}
+			}
+
+			// setup post ID
+			if ( isset( $post['ID'] ) && ! intval( $post['ID'] ) ) {
+				unset( $post['ID'] );
+			}
+
+			// set default to the post.
+			foreach ( Config::get_post_defaults() as $key => $value ) {
+				if ( ! isset( $post[ $key ] ) ) {
+					$post[ $key ] = $value;
+				}
+			}
+
+			$inserted_posts[] = wp_insert_post( $post, true );
+		}
+
+		return $inserted_posts;
+	}
+
+	/**
 	* Return the post object as array.
 	*
 	* @param  string $file    Path of the file.
 	* @return array Returns the post object as array.
 	* @since  0.1.0
 	*/
-	public static function parse_csv_to_post_object( $csv_file )
+	public static function parse_csv_to_post_objects( $csv_file )
 	{
 		$csv = self::csv_to_hash_array( $csv_file );
 		if ( is_wp_error( $csv ) ) {
