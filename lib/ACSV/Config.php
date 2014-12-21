@@ -78,6 +78,11 @@ class Config {
 			$post_object_keys[ strtolower( $key ) ] = $key;
 		}
 
+		/**
+		 * Filter the post object keys.
+		 *
+		 * @param array $post_object_keys The post object keys.
+		 */
 		return apply_filters( "advanced_csv_importer_post_object_keys", $post_object_keys );
 	}
 }

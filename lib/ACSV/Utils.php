@@ -64,15 +64,24 @@ class Utils {
 			$post['post_meta'] = array();
 			foreach ( $row as $col => $value ) {
 				if ( isset( $post_object_keys[ $col ] ) && $post_object_keys[ $col ] ) {
-					$post[ $post_object_keys[ $col ] ] = $value;
+					if ( $post_object_keys[ $col ] === 'post_category' || $post_object_keys[ $col ] === 'tags_input' ) {
+						$post[ $post_object_keys[ $col ] ] = self::array_trim( preg_split( "/,/", $value ) );
+					} else {
+						$post[ $post_object_keys[ $col ] ] = trim( $value );
+					}
 				} else {
-					$post['post_meta'][ $col ] = $value;
+					$post['post_meta'][ $col ] = trim( $value );
 				}
 			}
 			$post_objects[] = $post;
 		}
 
-		return $post_objects;
+		/**
+		 * Filter the post_object for import.
+		 *
+		 * @param array $post_object The post object.
+		 */
+		return apply_filters( 'advanced_csv_importer_post_objects', $post_objects );
 	}
 
 	/**
@@ -92,6 +101,11 @@ class Utils {
 
 		$csv = array();
 
+		/**
+		 * Filter the CSV setting for the csv parser.
+		 *
+		 * @param array settings for the csv parser.
+		 */
 		$format = apply_filters( 'advanced_csv_importer_csv_format', array(
 			'from_charset' => 'UTF-8',
 			'to_charset'   => 'UTF-8',
@@ -173,5 +187,25 @@ class Utils {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	* Return the trimed strings as array.
+	*
+	* @param  string $strings Path of the file.
+	* @return array Return the trimed strings as array.
+	* @since  0.1.0
+	*/
+	private static function array_trim( $strings )
+	{
+		$array = array();
+		foreach ( $strings as $str ) {
+			$str = trim( $str );
+			if ( $str ) {
+				$array[] = $str;
+			}
+		}
+
+		return $array;
 	}
 }

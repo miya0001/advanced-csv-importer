@@ -14,13 +14,19 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_object()
+	public function parse_csv_to_post_object_03()
 	{
-		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
-		$this->assertSame( "0", $post_object[1]['post_meta']['isImported'] );
-		$this->assertSame( "19", $post_object[2]['ID'] );
+		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$this->assertSame( 4, count( $post_object ) );
+		$this->assertSame( 1, count( $post_object[0]['post_category'] ) );
+		$this->assertSame( 2, count( $post_object[0]['tags_input'] ) );
+	}
 
-
+	/**
+	* @test
+	*/
+	public function parse_csv_to_post_object_02()
+	{
 		add_filter( 'advanced_csv_importer_post_object_keys', function(){
 			return array(
 				'id' => 'ID',
@@ -30,6 +36,16 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 
 		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( "0", $post_object[1]['post_title'] );
+		$this->assertSame( "19", $post_object[2]['ID'] );
+	}
+
+	/**
+	* @test
+	*/
+	public function parse_csv_to_post_object_01()
+	{
+		$post_object = ACSV\Utils::parse_csv_to_post_object( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$this->assertSame( "0", $post_object[1]['post_meta']['isImported'] );
 		$this->assertSame( "19", $post_object[2]['ID'] );
 	}
 
