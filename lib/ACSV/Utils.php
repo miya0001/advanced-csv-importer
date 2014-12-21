@@ -2,8 +2,6 @@
 
 namespace ACSV;
 
-use \ACSV\Utils as Utils;
-
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
@@ -45,10 +43,42 @@ class Utils {
 	}
 
 	/**
+	* Return the post object as array.
+	*
+	* @param  string $file    Path of the file.
+	* @return array Returns the post object as array.
+	* @since  0.1.0
+	*/
+	public static function parse_csv_to_post_object( $csv_file )
+	{
+		$csv = self::csv_to_hash_array( $csv_file );
+		if ( is_wp_error( $csv ) ) {
+			return $csv;
+		}
+
+		$post_object_keys = Config::get_post_object_keys();
+
+		$post_objects = array();
+		foreach ( $csv as $row ) {
+			$post = array();
+			$post['post_meta'] = array();
+			foreach ( $row as $col => $value ) {
+				if ( isset( $post_object_keys[ $col ] ) && $post_object_keys[ $col ] ) {
+					$post[ $post_object_keys[ $col ] ] = $value;
+				} else {
+					$post['post_meta'][ $col ] = $value;
+				}
+			}
+			$post_objects[] = $post;
+		}
+
+		return $post_objects;
+	}
+
+	/**
 	 * CSV parser
 	 *
 	 * @param  string $file    Path of the file.
-	 * @param  string $charset Charset of the file.
 	 * @return array Returns the array from csv.
 	 * @since  0.1.0
 	 */
