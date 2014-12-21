@@ -1,6 +1,7 @@
 <?php
 
 use Megumi\WP\Post\Helper;
+use WP_UnitTestCase;
 
 class WP_Post_Helper_Test extends WP_UnitTestCase {
 
@@ -79,4 +80,3 @@ class WP_Post_Helper_Test extends WP_UnitTestCase {
 		$this->assertSame( $attachment_id, $media[ $attachment_id ]->ID );
 	}
 }
-
