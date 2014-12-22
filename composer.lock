@@ -65,16 +65,16 @@
         },
         {
             "name": "megumi/wp-post-helper",
-            "version": "0.2.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/megumiteam/wp-post-helper.git",
-                "reference": "1f0b1564803b9dd0f6c9f202a8bc058011ceeb82"
+                "reference": "1c566115c7bb498e0b8e8625d5eba936eab022f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/megumiteam/wp-post-helper/zipball/1f0b1564803b9dd0f6c9f202a8bc058011ceeb82",
-                "reference": "1f0b1564803b9dd0f6c9f202a8bc058011ceeb82",
+                "url": "https://api.github.com/repos/megumiteam/wp-post-helper/zipball/1c566115c7bb498e0b8e8625d5eba936eab022f6",
+                "reference": "1c566115c7bb498e0b8e8625d5eba936eab022f6",
                 "shasum": ""
             },
             "require": {
@@ -100,7 +100,7 @@
                     "email": "miyauchi@digitalcube.jp"
                 }
             ],
-            "time": "2014-12-21 18:59:04"
+            "time": "2014-12-22 21:00:15"
         }
     ],
     "packages-dev": [],

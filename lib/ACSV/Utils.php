@@ -2,11 +2,11 @@
 
 namespace ACSV;
 
-use Goodby\CSV\Import\Standard\Lexer;
-use Goodby\CSV\Import\Standard\Interpreter;
-use Goodby\CSV\Import\Standard\LexerConfig;
+use \Goodby\CSV\Import\Standard\Lexer;
+use \Goodby\CSV\Import\Standard\Interpreter;
+use \Goodby\CSV\Import\Standard\LexerConfig;
 
-use WP_Error;
+use \WP_Error;
 
 class Utils {
 
@@ -96,7 +96,18 @@ class Utils {
 				}
 			}
 
-			$inserted_posts[] = wp_insert_post( $post, true );
+			$helper = new \Megumi\WP\Post\Helper( $post );
+			$post_id = $helper->insert();
+
+			if ( ! is_wp_error( $post_id ) ) {
+				foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
+					update_post_meta( $post_id, $meta_key, $meta_value );
+				}
+			}
+
+			do_action( 'advanced_csv_importer_after_insert_post', $post_id, $post );
+
+			$inserted_posts[] = $post_id;
 		}
 
 		return $inserted_posts;

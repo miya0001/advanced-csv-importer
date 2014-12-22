@@ -13,5 +13,5 @@ Domain Path: /languages
 require dirname( __FILE__ ) . '/vendor/autoload.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	WP_CLI::add_command( 'csv', 'ACSV\Cli' );
+	WP_CLI::add_command( 'csv', '\ACSV\Cli' );
 }
