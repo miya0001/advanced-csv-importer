@@ -2,9 +2,9 @@
 
 namespace ACSV;
 
-use \Goodby\CSV\Import\Standard\Lexer;
-use \Goodby\CSV\Import\Standard\Interpreter;
-use \Goodby\CSV\Import\Standard\LexerConfig;
+use Goodby\CSV\Import\Standard\Lexer;
+use Goodby\CSV\Import\Standard\Interpreter;
+use Goodby\CSV\Import\Standard\LexerConfig;
 
 use \WP_Error;
 
@@ -100,8 +100,10 @@ class Utils {
 			$post_id = $helper->insert();
 
 			if ( ! is_wp_error( $post_id ) ) {
-				foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
-					update_post_meta( $post_id, $meta_key, $meta_value );
+				if ( isset( $post['post_meta'] ) ) {
+					foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
+						update_post_meta( $post_id, $meta_key, $meta_value );
+					}
 				}
 			}
 

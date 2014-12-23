@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4c694e6bdd036fc5c522b2fc8c4091f6",
+    "hash": "3451d3f6422bd9b5edef950939c18874",
     "packages": [
         {
             "name": "goodby/csv",
@@ -65,16 +65,16 @@
         },
         {
             "name": "megumi/wp-post-helper",
-            "version": "0.4.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/megumiteam/wp-post-helper.git",
-                "reference": "1c566115c7bb498e0b8e8625d5eba936eab022f6"
+                "reference": "ddd4037c3824996cd42d233c1bae2d55c5bd3578"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/megumiteam/wp-post-helper/zipball/1c566115c7bb498e0b8e8625d5eba936eab022f6",
-                "reference": "1c566115c7bb498e0b8e8625d5eba936eab022f6",
+                "url": "https://api.github.com/repos/megumiteam/wp-post-helper/zipball/ddd4037c3824996cd42d233c1bae2d55c5bd3578",
+                "reference": "ddd4037c3824996cd42d233c1bae2d55c5bd3578",
                 "shasum": ""
             },
             "require": {
@@ -100,13 +100,15 @@
                     "email": "miyauchi@digitalcube.jp"
                 }
             ],
-            "time": "2014-12-22 21:00:15"
+            "time": "2014-12-23 06:06:17"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "megumi/wp-post-helper": 20
+    },
     "prefer-stable": false,
     "platform": {
         "php": ">=5.3.2"

@@ -5,10 +5,73 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function parser()
+	public function insert_posts_author()
 	{
-		$data = \ACSV\Utils::csv_parser( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
-		$this->assertTrue( is_array( $data ) );
+		$posts = array(
+			array(
+				'post_author' => 'admin',
+				'post_title' => 'original post',
+			),
+			array(
+				'post_author' => 'foo', // should be admin
+				'post_title' => 'original post',
+			),
+			array(
+				'post_author' => 'bar', // should be admin
+				'post_title' => 'original post',
+			),
+		);
+
+		$post_ids = \ACSV\Utils::insert_posts( $posts );
+		for ( $i = 0; $i < count( $post_ids ); $i++ ) {
+			$post = get_post( $post_ids[ $i ] );
+			$this->assertSame( "1", $post->post_author, $posts[ $i ]['post_author'] . ' should be 1.' );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function insert_posts_page()
+	{
+		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/pages.csv' );
+		$inserted_posts = \ACSV\Utils::insert_posts( $post_objects );
+
+		foreach ( $inserted_posts as $pid ) {
+			$post = get_post( $pid );
+			$this->assertSame( 'page', get_post_type( $post ) );
+		}
+
+		$this->assertSame( 0, get_post( $inserted_posts[0] )->menu_order );
+		$this->assertSame( 1, get_post( $inserted_posts[1] )->menu_order );
+		$this->assertSame( 3, get_post( $inserted_posts[2] )->menu_order );
+		$this->assertSame( 2, get_post( $inserted_posts[3] )->menu_order );
+	}
+
+	/**
+	 * @test
+	 */
+	public function insert_posts_03()
+	{
+		$posts = array(
+			array(
+				'post_title' => 'original post'
+			)
+		);
+
+		$original_posts = \ACSV\Utils::insert_posts( $posts );
+		$this->assertSame( 'original post', get_post( $original_posts[0] )->post_title );
+
+		$posts = array(
+			array(
+				'ID'         => $original_posts[0],
+				'post_title' => 'updated post'
+			)
+		);
+
+		$updated_posts = \ACSV\Utils::insert_posts( $posts );
+		$this->assertSame( 'updated post', get_post( $updated_posts[0] )->post_title );
+		$this->assertSame( $original_posts[0], $updated_posts[0] );
 	}
 
 	/**
@@ -16,7 +79,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	*/
 	public function insert_posts_02()
 	{
-		$num_posts = 10;
+		$num_posts = 5;
 
 		$post_statuses = array(
 			'publish',
@@ -35,7 +98,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 				'post_title'      => 'post-title-' . $i,
 				'post_status'     => $post_statuses[ rand( 0, count( $post_statuses ) - 1 ) ],
 				'post_type'       => 'post',
-				'post_author'     => rand( 0, 9 ),
+				'post_author'     => rand( 1, 10 ),
 				'ping_status'     => $ping_statuses[ rand( 0, count( $ping_statuses ) - 1 ) ],
 				'post_excerpt'    => 'post-excerpt-' . $i,
 				'post_date'       => '2014-01-01 00:10:25',
@@ -169,4 +232,14 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/img.png' );
 		$this->assertTrue( is_wp_error( $data ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function parser()
+	{
+		$data = \ACSV\Utils::csv_parser( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
+		$this->assertTrue( is_array( $data ) );
+	}
+
 }

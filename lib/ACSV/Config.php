@@ -32,6 +32,7 @@ class Config {
 	private static $post_defaults = array(
 		'post_status' => 'publish',
 		'post_type'   => 'post',
+		'post_author' => "1",
 	);
 
 	/**
