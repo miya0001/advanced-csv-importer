@@ -80,7 +80,7 @@ class Config {
 
 		$post_object_keys = array();
 		foreach ( $keys as $key ) {
-			$post_object_keys[ strtolower( $key ) ] = $key;
+			$post_object_keys[ $key ] = $key;
 		}
 
 		/**

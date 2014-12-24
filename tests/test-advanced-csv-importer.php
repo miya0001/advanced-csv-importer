@@ -169,7 +169,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	{
 		add_filter( 'advanced_csv_importer_post_object_keys', function(){
 			return array(
-				'id' => 'ID',
+				'ID' => 'ID',
 				'isImported' => 'post_title'
 			);
 		} );

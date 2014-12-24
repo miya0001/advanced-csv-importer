@@ -42,6 +42,42 @@ class Utils {
 	{
 	}
 
+	public static function register_import_log()
+	{
+		$args = array(
+			'public'             => false,
+			'publicly_queryable' => false,
+			'show_ui'            => true,
+			'show_in_menu'       => true,
+			'query_var'          => false,
+			'capability_type'    => 'post',
+			'has_archive'        => false,
+			'hierarchical'       => false,
+			'menu_position'      => null,
+			'supports'           => array( 'title', 'author', 'custom-fields' )
+		);
+
+		register_post_type( 'acsv-log', $args );
+	}
+
+	public static function save_history( $inserted_posts )
+	{
+		$uid = get_current_user_id();
+
+		$post = array(
+			'post_author' => $uid,
+			'post_title'  => 'import',
+			'post_type'   => 'acsv-log',
+			'post_status' => 'publish',
+			'post_name'   => md5( json_encode( $inserted_posts ) ),
+		);
+
+		$helper = new \Megumi\WP\Post\Helper( $post );
+		$post_id = $helper->insert();
+
+		add_post_meta( $post_id, '_import-log', $inserted_posts );
+	}
+
 	/**
 	* Insert posts
 	*
@@ -112,6 +148,7 @@ class Utils {
 			$inserted_posts[] = $post_id;
 		}
 
+		self::save_history( $inserted_posts );
 		return $inserted_posts;
 	}
 
