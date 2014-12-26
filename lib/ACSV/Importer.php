@@ -27,7 +27,25 @@ class Importer extends \WP_Importer {
 				if ( is_wp_error( $result ) ) {
 					echo $result->get_error_message();
 				} else {
-					echo 'OK';
+					$posts = Main::post_ids_to_posts( $result );
+					echo '<p>All Done!</p>';
+					echo '<form method="post">'
+					echo '<table class="wp-list-table widefat fixed posts">';
+					echo '<thead><tr style="color: #dedede;">';
+					echo '<th scope="col" class="manage-column column-cb check-column"><input type="checkbox" id="cb-select-all-1" /></th><th scope="col">Title</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Date</th>';
+					echo '</tr></thead>';
+					foreach ( $posts as $p ) {
+						printf(
+							'<tr><th scope="row" class="check-column"><input type="checkbox" name="acsv-import-id" value="%s" /></th><td class="post-title page-title column-title">%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+							$p['ID'],
+							$p['Title'],
+							$p['Type'],
+							$p['Status'],
+							$p['Date']
+						);
+					}
+					echo '</table>';
+					echo '</form>';
 				}
 				break;
 		}
@@ -61,7 +79,7 @@ class Importer extends \WP_Importer {
 		} else {
 			$inserted_posts = Main::insert_posts( $post_objects );
 			wp_import_cleanup( $file['id'] );
-			return Main::get_log_name( $inserted_posts );
+			return $inserted_posts;
 		}
 	}
 
@@ -116,7 +134,7 @@ class Importer extends \WP_Importer {
 	{
 		echo '<div class="wrap">';
 		screen_icon();
-		echo '<h2>' . __( 'Import WordPress', 'advanced-csv-importer' ) . '</h2>';
+		echo '<h2>' . __( 'Advanced CSV Importer', 'advanced-csv-importer' ) . '</h2>';
 		$updates = get_plugin_updates();
 		$basename = plugin_basename( __FILE__ );
 		if ( isset( $updates[ $basename ] ) ) {

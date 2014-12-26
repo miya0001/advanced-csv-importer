@@ -17,7 +17,6 @@ class Cli extends WP_CLI_Command {
 		parent::__construct();
 	}
 
-
 	/**
 	 * Import posts or pages from a CSV file.
 	 *
@@ -69,7 +68,7 @@ class Cli extends WP_CLI_Command {
 			}
 		} else {
 			$history = Main::get_history( true );
-			WP_CLI\Main\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
+			WP_CLI\Utils\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
 		}
 	}
 
@@ -81,24 +80,9 @@ class Cli extends WP_CLI_Command {
 	 */
 	private function get_imported_data( $inserted_posts )
 	{
-		$posts = array();
-		foreach ( $inserted_posts as $post_id ) {
-			if ( is_wp_error( $post_id ) ) {
-				continue;
-			}
+		$posts = Main::post_ids_to_posts( $inserted_posts );
 
-			$post = get_post( $post_id );
-
-			$posts[] = array(
-				'ID' => $post_id,
-				'Title' => $post->post_title,
-				'Type' => $post->post_type,
-				'Status' => $post->post_status,
-				'Date' => date_i18n( 'Y-m-d H:i:s', strtotime( $post->post_date ), true ),
-			);
-		}
-
-		WP_CLI\Main\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
+		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
 
 		$fail    = Main::get_num_fail( $inserted_posts );
 

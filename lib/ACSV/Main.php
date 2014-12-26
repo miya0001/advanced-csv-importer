@@ -66,7 +66,8 @@ class Main {
 
 		register_post_type( 'acsv-log', $args );
 
-		add_action( 'advanced_csv_importer_after_insert_post', array( 'ACSV\Main', 'after_insert_post' ), 10, 2 );
+		add_action( 'advanced_csv_importer_after_insert_post',
+				array( 'ACSV\Main', 'after_insert_post' ), 10, 2 );
 	}
 
 	/**
@@ -117,6 +118,36 @@ class Main {
 		$post_id = $helper->insert();
 
 		update_post_meta( $post_id, '_import_log', serialize( $inserted_posts ) );
+	}
+
+	/**
+	 * Returns the posts from post ids.
+	 *
+	 * @param  array $inserted_posts Inserted IDs.
+	 * @return array Post objects.
+	 * @since  0.1.0
+	 */
+	public static function post_ids_to_posts( $post_ids )
+	{
+		$posts = array();
+
+		foreach ( $post_ids as $post_id ) {
+			if ( is_wp_error( $post_id ) ) {
+				continue;
+			}
+
+			$post = get_post( $post_id );
+
+			$posts[] = array(
+				'ID' => $post_id,
+				'Title' => $post->post_title,
+				'Type' => $post->post_type,
+				'Status' => $post->post_status,
+				'Date' => date_i18n( 'Y-m-d H:i:s', strtotime( $post->post_date ), true ),
+			);
+		}
+
+		return $posts;
 	}
 
 	/**

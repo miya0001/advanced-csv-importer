@@ -28,7 +28,11 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	 */
 	public function insert_posts_meta_remove_test()
 	{
-		remove_action( 'advanced_csv_importer_after_insert_post', array( 'ACSV\Main', 'after_insert_post' ), 10 );
+		remove_action(
+			'advanced_csv_importer_after_insert_post',
+			array( 'ACSV\Main', 'after_insert_post' ),
+			10
+		);
 
 		$posts = array(
 			array(
