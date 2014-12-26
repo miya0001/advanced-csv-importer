@@ -67,18 +67,37 @@ class Main {
 		register_post_type( 'acsv-log', $args );
 
 		add_action( 'advanced_csv_importer_after_insert_post',
-				array( 'ACSV\Main', 'after_insert_post' ), 10, 2 );
+				array( 'ACSV\Main', 'add_post_meta' ), 10, 2 );
+		add_action( 'advanced_csv_importer_after_insert_post',
+				array( 'ACSV\Main', 'set_tags' ), 10, 2 );
 	}
 
 	/**
-	 * Fire after insert post.
+	 * Set tags to the post.
 	 *
 	 * @param  int   $post_id Post ID.
 	 * @param  array $post    Post object.
 	 * @return none
 	 * @since  0.1.0
 	 */
-	public static function after_insert_post( $post_id, $post )
+	public static function set_tags( $post_id, $post )
+	{
+		if ( ! is_wp_error( $post_id ) ) {
+			if ( isset( $post['tags_input'] ) ) {
+				wp_set_post_tags( $post_id, $post['tags_input'], true );
+			}
+		}
+	}
+
+	/**
+	 * Add meta to the post.
+	 *
+	 * @param  int   $post_id Post ID.
+	 * @param  array $post    Post object.
+	 * @return none
+	 * @since  0.1.0
+	 */
+	public static function add_post_meta( $post_id, $post )
 	{
 		if ( ! is_wp_error( $post_id ) ) {
 			if ( isset( $post['post_meta'] ) ) {

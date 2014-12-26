@@ -22,6 +22,41 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Set category and tag
+	 *
+	 * @test
+	 */
+	public function insert_posts_category_tag()
+	{
+		$posts = array(
+			array(
+				'post_author'   => 'admin',
+				'post_title'    => 'original post',
+				'post_category' => array(
+					'fruits',
+					'flowers'
+				),
+			),
+			array(
+				'post_author' => 'foo', // should be admin
+				'post_title'  => 'original post',
+				'tags_input'  => array(
+					'foo',
+					'bar',
+				),
+			),
+		);
+
+		$inserted_posts = \ACSV\Main::insert_posts( $posts );
+
+		$this->assertTrue( in_category( 'fruits', $inserted_posts[0] ) );
+		$this->assertTrue( in_category( 'flowers', $inserted_posts[0] ) );
+
+		$this->assertTrue( has_tag( 'foo', $inserted_posts[1] ) );
+		$this->assertTrue( has_tag( 'bar', $inserted_posts[1] ) );
+	}
+
+	/**
 	 * Removing default action from `advanced_csv_importer_after_insert_post`
 	 *
 	 * @test
@@ -30,7 +65,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	{
 		remove_action(
 			'advanced_csv_importer_after_insert_post',
-			array( 'ACSV\Main', 'after_insert_post' ),
+			array( 'ACSV\Main', 'add_post_meta' ),
 			10
 		);
 

@@ -29,7 +29,7 @@ class Importer extends \WP_Importer {
 				} else {
 					$posts = Main::post_ids_to_posts( $result );
 					echo '<p>All Done!</p>';
-					echo '<form method="post">'
+					echo '<form method="post">';
 					echo '<table class="wp-list-table widefat fixed posts">';
 					echo '<thead><tr style="color: #dedede;">';
 					echo '<th scope="col" class="manage-column column-cb check-column"><input type="checkbox" id="cb-select-all-1" /></th><th scope="col">Title</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Date</th>';
