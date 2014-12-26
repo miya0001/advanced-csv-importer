@@ -23,7 +23,7 @@ class Cli extends WP_CLI_Command {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [<file>]
+	 * <file>
 	 * : The name of the CSV file to import. If '-', then reads from STDIN.
      *
 	 * [--charset=<charset>]
@@ -46,24 +46,58 @@ class Cli extends WP_CLI_Command {
 		}
 
 		$inserted_posts = Utils::insert_posts( $post_objects );
+		$this->get_imported_data( $inserted_posts );
+	}
 
+	/**
+	 * Display importing log.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of the log.
+	 *
+	 */
+	function log( $args, $assoc_args )
+	{
+		if ( isset( $args[0] ) && $args[0] ) {
+			$ids = Utils::get_imported_post_ids( $args[0] );
+			if ( $ids ) {
+				$this->get_imported_data( $ids );
+			} else {
+				WP_CLI::warning( 'Not found.' );
+			}
+		} else {
+			$history = Utils::get_history( true );
+			WP_CLI\Utils\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
+		}
+	}
+
+	/**
+	 * Display importing log.
+	 *
+	 * @param  array $inserted_posts An array of the post ids
+	 * @return none
+	 */
+	private function get_imported_data( $inserted_posts )
+	{
 		$posts = array();
-		$error = array();
 		foreach ( $inserted_posts as $post_id ) {
 			if ( is_wp_error( $post_id ) ) {
-				$error[] = $post_id;
 				continue;
 			}
 			$posts[] = array(
 				'ID' => $post_id,
-				'post_title' => get_post( $post_id )->post_title,
+				'Title' => get_post( $post_id )->post_title,
 			);
 		}
 
-		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'post_title'  ) );
+		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title'  ) );
 
-		if ( count( $error ) ) {
-			WP_CLI::line( 'Failed to import: ' . count( $error ) . '/' . count( $inserted_posts ) );
+		$fail    = Utils::get_num_fail( $inserted_posts );
+
+		if ( $fail ) {
+			WP_CLI::warning( 'Failed to import: ' . $fail );
 		}
 	}
 }

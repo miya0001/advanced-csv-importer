@@ -42,13 +42,20 @@ class Utils {
 	{
 	}
 
+	/**
+	 * Register post-type for import.
+	 *
+	 * @param  none
+	 * @return none
+	 * @since  0.1.0
+	 */
 	public static function register_import_log()
 	{
 		$args = array(
 			'public'             => false,
 			'publicly_queryable' => false,
-			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'show_ui'            => false,
+			'show_in_menu'       => false,
 			'query_var'          => false,
 			'capability_type'    => 'post',
 			'has_archive'        => false,
@@ -60,31 +67,113 @@ class Utils {
 		register_post_type( 'acsv-log', $args );
 	}
 
+	/**
+	 * Save histoy in the post-type `acsv-log`.
+	 *
+	 * @param  array $inserted_posts Inserted IDs.
+	 * @return string ID.
+	 * @since  0.1.0
+	 */
 	public static function save_history( $inserted_posts )
 	{
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			$from = 'WP-CLI';
+		} else {
+			$from = 'admin screen';
+		}
+
 		$uid = get_current_user_id();
 
 		$post = array(
 			'post_author' => $uid,
-			'post_title'  => 'import',
+			'post_title'  => 'Imported from ' . $from . '.',
 			'post_type'   => 'acsv-log',
 			'post_status' => 'publish',
-			'post_name'   => md5( json_encode( $inserted_posts ) ),
+			'post_name'   => self::get_log_name( $inserted_posts ),
 		);
 
 		$helper = new \Megumi\WP\Post\Helper( $post );
 		$post_id = $helper->insert();
 
-		add_post_meta( $post_id, '_import-log', $inserted_posts );
+		update_post_meta( $post_id, '_import_log', serialize( $inserted_posts ) );
 	}
 
 	/**
-	* Insert posts
-	*
-	* @param  string $post_objects    Path of the file.
-	* @return mixed  True or WP_Eroor object.
-	* @since  0.1.0
-	*/
+	 * Get the log id
+	 *
+	 * @param  array $inserted_posts Inserted IDs.
+	 * @return string ID.
+	 * @since  0.1.0
+	 */
+	public static function get_log_name( $inserted_posts )
+	{
+		return substr( sha1( json_encode( $inserted_posts ) ), 0, 8 );
+	}
+
+	/**
+	 * Get the log id
+	 *
+	 * @param  array $inserted_posts Inserted IDs.
+	 * @return string ID.
+	 * @since  0.1.0
+	 */
+	public static function get_imported_post_ids( $log_name )
+	{
+		$post = get_page_by_path( $log_name, OBJECT, 'acsv-log' );
+
+		if ( $post ) {
+			$log = unserialize( get_post_meta( $post->ID, '_import_log', true ) );
+			return $log;
+		}
+	}
+
+	/**
+	 * Get import log.
+	 *
+	 * @param  none
+	 * @return array Import log.
+	 * @since  0.1.0
+	 */
+	public static function get_history( $cli = false )
+	{
+		$args = array(
+			'post_type'   => 'acsv-log',
+			'post_status' => 'publish',
+		);
+
+		$posts = get_posts( $args );
+
+		$logs = array();
+		foreach ( $posts as $log ) {
+			$imported = self::get_imported_post_ids( $log->post_name );
+
+			if ( $cli ) {
+				$success = sprintf( '% 7d', self::get_num_success( $imported ) );
+				$failure = sprintf( '% 7d', self::get_num_fail( $imported ) );
+			} else {
+				$success = self::get_num_success( $imported );
+				$failure = self::get_num_fail( $imported );
+			}
+
+			$logs[] = array(
+				'ID'    => $log->post_name,
+				'Title'   => $log->post_title,
+				'Date'    => $log->post_date,
+				'Success' => $success,
+				'Failure' => $failure,
+			);
+		}
+
+		return $logs;
+	}
+
+	/**
+	 * Insert posts
+	 *
+	 * @param  string $post_objects    Path of the file.
+	 * @return mixed  True or WP_Eroor object.
+	 * @since  0.1.0
+	 */
 	public static function insert_posts( $post_objects )
 	{
 		$inserted_posts = array();
@@ -153,12 +242,12 @@ class Utils {
 	}
 
 	/**
-	* Return the post object as array.
-	*
-	* @param  string $file    Path of the file.
-	* @return array Returns the post object as array.
-	* @since  0.1.0
-	*/
+	 * Return the post object as array.
+	 *
+	 * @param  string $file    Path of the file.
+	 * @return array Returns the post object as array.
+	 * @since  0.1.0
+	 */
 	public static function parse_csv_to_post_objects( $csv_file )
 	{
 		$csv = self::csv_to_hash_array( $csv_file );
@@ -258,7 +347,7 @@ class Utils {
 			return $csv;
 		}
 
-		$data = array();
+		$hash_array = array();
 		$keys = array();
 
 		foreach ( $csv as $row ) {
@@ -274,11 +363,49 @@ class Utils {
 					}
 
 				}
-				$data[] = $cols;
+				$hash_array[] = $cols;
 			}
 		}
 
-		return $data;
+		return apply_filters( "advanced_csv_importer_csv_to_hash_array", $hash_array );
+	}
+
+	/**
+	 * Return the number of success of impoted.
+	 *
+	 * @param  array $imported Imported post ids.
+	 * @return int   Return the number of success.
+	 * @since  0.1.0
+	 */
+	public static function get_num_success( $imported )
+	{
+		$array = array();
+		foreach ( $imported as $id ) {
+			if ( ! is_wp_error( $id ) ) {
+				$array[] = $id;
+			}
+		}
+
+		return count( $array );
+	}
+
+	/**
+	 * Return the number of fail of impoted.
+	 *
+	 * @param  array $imported Failed post ids.
+	 * @return int   Return the number of fail.
+	 * @since  0.1.0
+	 */
+	public static function get_num_fail( $imported )
+	{
+		$array = array();
+		foreach ( $imported as $id ) {
+			if ( is_wp_error( $id ) ) {
+				$array[] = $id;
+			}
+		}
+
+		return count( $array );
 	}
 
 	/**

@@ -61,7 +61,7 @@ class Importer extends \WP_Importer {
 		} else {
 			$inserted_posts = Utils::insert_posts( $post_objects );
 			wp_import_cleanup( $file['id'] );
-			return md5( json_encode( $inserted_posts ) );
+			return Utils::get_log_name( $inserted_posts );
 		}
 	}
 

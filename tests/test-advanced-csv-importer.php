@@ -5,6 +5,23 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function serialize_test()
+	{
+		$data = array(
+			true,
+			true,
+			new WP_Error( 'error', 'this is error' ),
+		);
+
+		$serialize = serialize( $data );
+		$unserialize = unserialize( $serialize );
+
+		$this->assertTrue( is_wp_error( $unserialize[2] ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function insert_posts_author()
 	{
 		$posts = array(
@@ -22,11 +39,18 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			),
 		);
 
-		$post_ids = \ACSV\Utils::insert_posts( $posts );
-		for ( $i = 0; $i < count( $post_ids ); $i++ ) {
-			$post = get_post( $post_ids[ $i ] );
+		$inserted_posts = \ACSV\Utils::insert_posts( $posts );
+		for ( $i = 0; $i < count( $inserted_posts ); $i++ ) {
+			$post = get_post( $inserted_posts[ $i ] );
 			$this->assertSame( "1", $post->post_author, $posts[ $i ]['post_author'] . ' should be 1.' );
 		}
+
+		$logs = \ACSV\Utils::get_history();
+		$this->assertEquals( 1, count( $logs ) );
+
+		$log_name = \ACSV\Utils::get_log_name( $inserted_posts );
+		$log = \ACSV\Utils::get_imported_post_ids( $log_name );
+		$this->assertEquals( 3, count( $log ) );
 	}
 
 	/**
