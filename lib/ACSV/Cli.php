@@ -86,13 +86,19 @@ class Cli extends WP_CLI_Command {
 			if ( is_wp_error( $post_id ) ) {
 				continue;
 			}
+
+			$post = get_post( $post_id );
+
 			$posts[] = array(
 				'ID' => $post_id,
-				'Title' => get_post( $post_id )->post_title,
+				'Title' => $post->post_title,
+				'Type' => $post->post_type,
+				'Status' => $post->post_status,
+				'Date' => date_i18n( 'Y-m-d H:i:s', strtotime( $post->post_date ), true ),
 			);
 		}
 
-		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title'  ) );
+		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
 
 		$fail    = Utils::get_num_fail( $inserted_posts );
 
