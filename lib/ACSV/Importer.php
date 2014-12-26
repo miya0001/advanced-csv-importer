@@ -52,16 +52,16 @@ class Importer extends \WP_Importer {
 		}
 
 		$csv_file = get_attached_file( $file['id'] );
-		$post_objects = Utils::parse_csv_to_post_objects( $csv_file );
+		$post_objects = Main::parse_csv_to_post_objects( $csv_file );
 
 		if ( is_wp_error( $post_objects ) ) {
 			echo '<p><strong>'.__( 'Failed to open file.', 'advanced-csv-importer' ).'</strong></p>';
 			wp_import_cleanup( $file['id'] );
 			return $post_objects;
 		} else {
-			$inserted_posts = Utils::insert_posts( $post_objects );
+			$inserted_posts = Main::insert_posts( $post_objects );
 			wp_import_cleanup( $file['id'] );
-			return Utils::get_log_name( $inserted_posts );
+			return Main::get_log_name( $inserted_posts );
 		}
 	}
 

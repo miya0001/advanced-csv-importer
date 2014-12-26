@@ -12,7 +12,7 @@ Domain Path: /languages
 
 require_once dirname( __FILE__ ) . '/vendor/autoload.php';
 
-add_action( 'init', array( 'ACSV\Utils', 'register_import_log' ) );
+add_action( 'init', array( 'ACSV\Main', 'init' ) );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 

@@ -39,13 +39,13 @@ class Cli extends WP_CLI_Command {
 			} );
 		}
 
-		$post_objects = Utils::parse_csv_to_post_objects( $args[0] );
+		$post_objects = Main::parse_csv_to_post_objects( $args[0] );
 
 		if ( is_wp_error( $post_objects ) ) {
 			WP_CLI::error( $post_objects->get_error_message() );
 		}
 
-		$inserted_posts = Utils::insert_posts( $post_objects );
+		$inserted_posts = Main::insert_posts( $post_objects );
 		$this->get_imported_data( $inserted_posts );
 	}
 
@@ -61,15 +61,15 @@ class Cli extends WP_CLI_Command {
 	function log( $args, $assoc_args )
 	{
 		if ( isset( $args[0] ) && $args[0] ) {
-			$ids = Utils::get_imported_post_ids( $args[0] );
+			$ids = Main::get_imported_post_ids( $args[0] );
 			if ( $ids ) {
 				$this->get_imported_data( $ids );
 			} else {
 				WP_CLI::warning( 'Not found.' );
 			}
 		} else {
-			$history = Utils::get_history( true );
-			WP_CLI\Utils\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
+			$history = Main::get_history( true );
+			WP_CLI\Main\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
 		}
 	}
 
@@ -98,9 +98,9 @@ class Cli extends WP_CLI_Command {
 			);
 		}
 
-		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
+		WP_CLI\Main\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
 
-		$fail    = Utils::get_num_fail( $inserted_posts );
+		$fail    = Main::get_num_fail( $inserted_posts );
 
 		if ( $fail ) {
 			WP_CLI::warning( 'Failed to import: ' . $fail );

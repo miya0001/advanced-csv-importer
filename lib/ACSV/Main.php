@@ -8,7 +8,7 @@ use Goodby\CSV\Import\Standard\LexerConfig;
 
 use \WP_Error;
 
-class Utils {
+class Main {
 
 	/**
 	 * Protected constructor to prevent creating a new instance of the
@@ -49,7 +49,7 @@ class Utils {
 	 * @return none
 	 * @since  0.1.0
 	 */
-	public static function register_import_log()
+	public static function init()
 	{
 		$args = array(
 			'public'             => false,
@@ -65,6 +65,27 @@ class Utils {
 		);
 
 		register_post_type( 'acsv-log', $args );
+
+		add_action( 'advanced_csv_importer_after_insert_post', array( 'ACSV\Main', 'after_insert_post' ), 10, 2 );
+	}
+
+	/**
+	 * Fire after insert post.
+	 *
+	 * @param  int   $post_id Post ID.
+	 * @param  array $post    Post object.
+	 * @return none
+	 * @since  0.1.0
+	 */
+	public static function after_insert_post( $post_id, $post )
+	{
+		if ( ! is_wp_error( $post_id ) ) {
+			if ( isset( $post['post_meta'] ) ) {
+				foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
+					update_post_meta( $post_id, $meta_key, $meta_value );
+				}
+			}
+		}
 	}
 
 	/**
@@ -223,14 +244,6 @@ class Utils {
 
 			$helper = new \Megumi\WP\Post\Helper( $post );
 			$post_id = $helper->insert();
-
-			if ( ! is_wp_error( $post_id ) ) {
-				if ( isset( $post['post_meta'] ) ) {
-					foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
-						update_post_meta( $post_id, $meta_key, $meta_value );
-					}
-				}
-			}
 
 			do_action( 'advanced_csv_importer_after_insert_post', $post_id, $post );
 
@@ -427,12 +440,12 @@ class Utils {
 	}
 
 	/**
-	* Return the trimed strings as array.
-	*
-	* @param  string $strings Path of the file.
-	* @return array Return the trimed strings as array.
-	* @since  0.1.0
-	*/
+	 * Return the trimed strings as array.
+	 *
+	 * @param  string $strings Path of the file.
+	 * @return array Return the trimed strings as array.
+	 * @since  0.1.0
+	 */
 	private static function array_trim( $strings )
 	{
 		$array = array();

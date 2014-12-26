@@ -39,17 +39,17 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			),
 		);
 
-		$inserted_posts = \ACSV\Utils::insert_posts( $posts );
+		$inserted_posts = \ACSV\Main::insert_posts( $posts );
 		for ( $i = 0; $i < count( $inserted_posts ); $i++ ) {
 			$post = get_post( $inserted_posts[ $i ] );
 			$this->assertSame( "1", $post->post_author, $posts[ $i ]['post_author'] . ' should be 1.' );
 		}
 
-		$logs = \ACSV\Utils::get_history();
+		$logs = \ACSV\Main::get_history();
 		$this->assertEquals( 1, count( $logs ) );
 
-		$log_name = \ACSV\Utils::get_log_name( $inserted_posts );
-		$log = \ACSV\Utils::get_imported_post_ids( $log_name );
+		$log_name = \ACSV\Main::get_log_name( $inserted_posts );
+		$log = \ACSV\Main::get_imported_post_ids( $log_name );
 		$this->assertEquals( 3, count( $log ) );
 	}
 
@@ -58,8 +58,8 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	 */
 	public function insert_posts_page()
 	{
-		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/pages.csv' );
-		$inserted_posts = \ACSV\Utils::insert_posts( $post_objects );
+		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/pages.csv' );
+		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
 
 		foreach ( $inserted_posts as $pid ) {
 			$post = get_post( $pid );
@@ -83,7 +83,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			)
 		);
 
-		$original_posts = \ACSV\Utils::insert_posts( $posts );
+		$original_posts = \ACSV\Main::insert_posts( $posts );
 		$this->assertSame( 'original post', get_post( $original_posts[0] )->post_title );
 
 		$posts = array(
@@ -93,7 +93,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			)
 		);
 
-		$updated_posts = \ACSV\Utils::insert_posts( $posts );
+		$updated_posts = \ACSV\Main::insert_posts( $posts );
 		$this->assertSame( 'updated post', get_post( $updated_posts[0] )->post_title );
 		$this->assertSame( $original_posts[0], $updated_posts[0] );
 	}
@@ -134,7 +134,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			);
 		};
 
-		$inserted_posts = \ACSV\Utils::insert_posts( $posts );
+		$inserted_posts = \ACSV\Main::insert_posts( $posts );
 
 		for ( $i = 0; $i < $num_posts; $i++ ) {
 			foreach ( $posts[ $i ] as $key => $value ) {
@@ -155,8 +155,8 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	*/
 	public function insert_posts_01()
 	{
-		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
-		$inserted_posts = \ACSV\Utils::insert_posts( $post_objects );
+		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
 		$this->assertSame( 4, count( $inserted_posts ) );
 
 		for ( $i = 0; $i < count( $post_objects ); $i++ ) {
@@ -180,7 +180,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	*/
 	public function parse_csv_to_post_objects_03()
 	{
-		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
 		$this->assertSame( 4, count( $post_objects ) );
 		$this->assertSame( 1, count( $post_objects[0]['post_category'] ) );
 		$this->assertSame( 2, count( $post_objects[0]['tags_input'] ) );
@@ -198,7 +198,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			);
 		} );
 
-		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( "0", $post_objects[1]['post_title'] );
 		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
@@ -208,7 +208,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	*/
 	public function parse_csv_to_post_objects_01()
 	{
-		$post_objects = \ACSV\Utils::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( "0", $post_objects[1]['post_meta']['isImported'] );
 		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
@@ -218,20 +218,20 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	 */
 	public function csv_parser()
 	{
-		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$data = \ACSV\Main::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( 3, count( $data ) );
 
 		/*
 		 * column with escaping, column with new line
 		 */
-		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
+		$data = \ACSV\Main::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
 		$this->assertSame( "columns with\nnew line", $data[4]['col1'] );
 		$this->assertSame( "column with \\n \\t \\\\", $data[6]['col1'] );
 
 		/*
 		 * utf-8 multibytes and CRLF
 		 */
-		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/multibytes-utf8.csv' );
+		$data = \ACSV\Main::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/multibytes-utf8.csv' );
 		$this->assertSame( array( '名前' => '太田 三子', '住所' => '福岡市', '年齢' => '50歳' ), $data[2] );
 
 		/*
@@ -241,19 +241,19 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			$format['from_charset'] = 'SJIS-win';
 			return $format;
 		} );
-		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/multibytes-sjis.csv' );
+		$data = \ACSV\Main::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/multibytes-sjis.csv' );
 		$this->assertSame( array( '名前' => '太田 三子', '住所' => '福岡市', '年齢' => '50歳' ), $data[2] );
 
 		/*
 		 * should be wp_error when file not found.
 		 */
-		$data = \ACSV\Utils::csv_to_hash_array( 'file-not-exists' );
+		$data = \ACSV\Main::csv_to_hash_array( 'file-not-exists' );
 		$this->assertTrue( is_wp_error( $data ) );
 
 		/*
 		 * should be wp_error when file is not csv.
 		 */
-		$data = \ACSV\Utils::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/img.png' );
+		$data = \ACSV\Main::csv_to_hash_array( dirname( __FILE__ ) . '/_data/csv/img.png' );
 		$this->assertTrue( is_wp_error( $data ) );
 	}
 
@@ -262,7 +262,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	 */
 	public function parser()
 	{
-		$data = \ACSV\Utils::csv_parser( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
+		$data = \ACSV\Main::csv_parser( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
 		$this->assertTrue( is_array( $data ) );
 	}
 
