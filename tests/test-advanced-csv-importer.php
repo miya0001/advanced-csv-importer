@@ -3,6 +3,8 @@
 class AdvancedImporter_Test extends WP_UnitTestCase {
 
 	/**
+	 * Can we recover WP_Error object after serialize.
+	 *
 	 * @test
 	 */
 	public function serialize_test()
@@ -20,6 +22,80 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Removing default action from `advanced_csv_importer_after_insert_post`
+	 *
+	 * @test
+	 */
+	public function insert_posts_meta_remove_test()
+	{
+		remove_action( 'advanced_csv_importer_after_insert_post', array( 'ACSV\Main', 'after_insert_post' ), 10 );
+
+		$posts = array(
+			array(
+				'post_author' => 'admin',
+				'post_title' => 'original post',
+				'post_meta' => array(
+					'meta-0-1' => 'value-0-1',
+					'meta-0-2' => 'value-0-2',
+				),
+			),
+			array(
+				'post_author' => 'foo', // should be admin
+				'post_title' => 'original post',
+				'post_meta' => array(
+					'meta-1-1' => 'value-1-1',
+					'meta-1-2' => 'value-1-2',
+				),
+			),
+		);
+
+		$inserted_posts = \ACSV\Main::insert_posts( $posts );
+
+		for ( $i = 0; $i < count( $inserted_posts ); $i++ ) {
+			$post = get_post( $inserted_posts[ $i ] );
+			$this->assertSame( "", get_post_meta( $post->ID, "meta-" . $i . "-1", true ) );
+			$this->assertSame( "", get_post_meta( $post->ID, "meta-" . $i . "-2", true ) );
+		}
+	}
+
+	/**
+	 * Importing and add post meta.
+	 *
+	 * @test
+	 */
+	public function insert_posts_meta()
+	{
+		$posts = array(
+			array(
+				'post_author' => 'admin',
+				'post_title' => 'original post',
+				'post_meta' => array(
+					'meta-0-1' => 'value-0-1',
+					'meta-0-2' => 'value-0-2',
+				),
+			),
+			array(
+				'post_author' => 'foo', // should be admin
+				'post_title' => 'original post',
+				'post_meta' => array(
+					'meta-1-1' => 'value-1-1',
+					'meta-1-2' => 'value-1-2',
+				),
+			),
+		);
+
+		$inserted_posts = \ACSV\Main::insert_posts( $posts );
+
+		for ( $i = 0; $i < count( $inserted_posts ); $i++ ) {
+			$post = get_post( $inserted_posts[ $i ] );
+			$this->assertSame( "value-" . $i . "-1", get_post_meta( $post->ID, "meta-" . $i . "-1", true ) );
+			$this->assertSame( "value-" . $i . "-2", get_post_meta( $post->ID, "meta-" . $i . "-2", true ) );
+		}
+	}
+
+	/**
+	 * Importing author and title.
+	 *
 	 * @test
 	 */
 	public function insert_posts_author()
