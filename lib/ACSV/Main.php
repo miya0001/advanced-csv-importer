@@ -61,51 +61,15 @@ class Main {
 			'has_archive'        => false,
 			'hierarchical'       => false,
 			'menu_position'      => null,
-			'supports'           => array( 'title', 'author', 'custom-fields' )
+			'supports'           => array( 'title', 'author', 'custom-fields' ),
+			'can_export'         => false,
 		);
 
 		register_post_type( 'acsv-log', $args );
 
-		add_action( 'advanced_csv_importer_after_insert_post',
-				array( 'ACSV\Main', 'add_post_meta' ), 10, 2 );
-		add_action( 'advanced_csv_importer_after_insert_post',
-				array( 'ACSV\Main', 'set_tags' ), 10, 2 );
-	}
-
-	/**
-	 * Set tags to the post.
-	 *
-	 * @param  int   $post_id Post ID.
-	 * @param  array $post    Post object.
-	 * @return none
-	 * @since  0.1.0
-	 */
-	public static function set_tags( $post_id, $post )
-	{
-		if ( ! is_wp_error( $post_id ) ) {
-			if ( isset( $post['tags_input'] ) ) {
-				wp_set_post_tags( $post_id, $post['tags_input'], true );
-			}
-		}
-	}
-
-	/**
-	 * Add meta to the post.
-	 *
-	 * @param  int   $post_id Post ID.
-	 * @param  array $post    Post object.
-	 * @return none
-	 * @since  0.1.0
-	 */
-	public static function add_post_meta( $post_id, $post )
-	{
-		if ( ! is_wp_error( $post_id ) ) {
-			if ( isset( $post['post_meta'] ) ) {
-				foreach ( $post['post_meta'] as $meta_key => $meta_value ) {
-					update_post_meta( $post_id, $meta_key, $meta_value );
-				}
-			}
-		}
+		// Register default actions to the hooks
+		add_action( 'acsv_after_insert_post', array( 'ACSV\Defaults\Actions', 'add_post_meta' ), 10, 2 );
+		add_action( 'acsv_after_insert_post', array( 'ACSV\Defaults\Actions', 'set_tags' ), 10, 2 );
 	}
 
 	/**
@@ -156,12 +120,16 @@ class Main {
 			}
 
 			$post = get_post( $post_id );
+			if ( ! $post ) {
+				continue;
+			}
 
 			$posts[] = array(
 				'ID' => $post_id,
 				'Title' => $post->post_title,
 				'Type' => $post->post_type,
 				'Status' => $post->post_status,
+				'Author' => get_user_by( 'id', $post->post_author )->user_login,
 				'Date' => date_i18n( 'Y-m-d H:i:s', strtotime( $post->post_date ), true ),
 			);
 		}
@@ -195,6 +163,8 @@ class Main {
 		if ( $post ) {
 			$log = unserialize( get_post_meta( $post->ID, '_import_log', true ) );
 			return $log;
+		} else {
+			return new WP_Error( 'Error', 'Not found.' );
 		}
 	}
 
@@ -295,7 +265,7 @@ class Main {
 			$helper = new \Megumi\WP\Post\Helper( $post );
 			$post_id = $helper->insert();
 
-			do_action( 'advanced_csv_importer_after_insert_post', $post_id, $post );
+			do_action( 'acsv_after_insert_post', $post_id, $post );
 
 			$inserted_posts[] = $post_id;
 		}
@@ -311,8 +281,12 @@ class Main {
 	 * @return array Returns the post object as array.
 	 * @since  0.1.0
 	 */
-	public static function parse_csv_to_post_objects( $csv_file )
+	public static function get_post_objects( $csv_file )
 	{
+		if ( has_filter( 'acsv_pre_get_post_objects' ) ) {
+			return apply_filters( 'acsv_pre_get_post_objects', $csv_file );
+		}
+
 		$csv = self::csv_to_hash_array( $csv_file );
 		if ( is_wp_error( $csv ) ) {
 			return $csv;
@@ -343,7 +317,7 @@ class Main {
 		 *
 		 * @param array $post_object The post object.
 		 */
-		return apply_filters( 'advanced_csv_importer_post_objects', $post_objects );
+		return apply_filters( 'acsv_after_get_post_objects', $post_objects );
 	}
 
 	/**
@@ -368,7 +342,7 @@ class Main {
 		 *
 		 * @param array settings for the csv parser.
 		 */
-		$format = apply_filters( 'advanced_csv_importer_csv_format', array(
+		$format = apply_filters( 'acsv_csv_format', array(
 			'from_charset' => 'UTF-8',
 			'to_charset'   => 'UTF-8',
 			'delimiter'    => ',',
@@ -430,7 +404,7 @@ class Main {
 			}
 		}
 
-		return apply_filters( "advanced_csv_importer_csv_to_hash_array", $hash_array );
+		return apply_filters( 'acsv_csv_to_hash_array', $hash_array );
 	}
 
 	/**

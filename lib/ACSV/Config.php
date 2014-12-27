@@ -88,7 +88,7 @@ class Config {
 		 *
 		 * @param array $post_object_keys The post object keys.
 		 */
-		return apply_filters( "advanced_csv_importer_post_object_keys", $post_object_keys );
+		return apply_filters( "acsv_post_object_keys", $post_object_keys );
 	}
 
 	/**
@@ -105,6 +105,6 @@ class Config {
 		*
 		* @param array $post_defaults The post defaults.
 		*/
-		return apply_filters( "advanced_csv_importer_post_defaults", self::$post_defaults );
+		return apply_filters( "acsv_post_defaults", self::$post_defaults );
 	}
 }

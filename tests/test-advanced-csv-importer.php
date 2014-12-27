@@ -3,6 +3,20 @@
 class AdvancedImporter_Test extends WP_UnitTestCase {
 
 	/**
+	 * Test for the action hook `acsv_get_post_objects`
+	 *
+	 * @test
+	 */
+	public function acsv_get_post_objects()
+	{
+		add_filter( 'acsv_pre_get_post_objects', function( $csv_file ){
+			return array( 'foo' => 'bar' );
+		} );
+
+		$this->assertSame( array( 'foo' => 'bar' ), \ACSV\Main::get_post_objects( '/path/to/dummy.xml' ) );
+	}
+
+	/**
 	 * Can we recover WP_Error object after serialize.
 	 *
 	 * @test
@@ -64,8 +78,8 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	public function insert_posts_meta_remove_test()
 	{
 		remove_action(
-			'advanced_csv_importer_after_insert_post',
-			array( 'ACSV\Main', 'add_post_meta' ),
+			'acsv_after_insert_post',
+			array( 'ACSV\Defaults\Actions', 'add_post_meta' ),
 			10
 		);
 
@@ -173,7 +187,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	 */
 	public function insert_posts_page()
 	{
-		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/pages.csv' );
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/wp/pages.csv' );
 		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
 
 		foreach ( $inserted_posts as $pid ) {
@@ -270,7 +284,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	*/
 	public function insert_posts_01()
 	{
-		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
 		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
 		$this->assertSame( 4, count( $inserted_posts ) );
 
@@ -293,9 +307,9 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_objects_03()
+	public function get_post_objects_03()
 	{
-		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/wp/sample.csv' );
 		$this->assertSame( 4, count( $post_objects ) );
 		$this->assertSame( 1, count( $post_objects[0]['post_category'] ) );
 		$this->assertSame( 2, count( $post_objects[0]['tags_input'] ) );
@@ -304,16 +318,16 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_objects_02()
+	public function get_post_objects_02()
 	{
-		add_filter( 'advanced_csv_importer_post_object_keys', function(){
+		add_filter( 'acsv_post_object_keys', function(){
 			return array(
 				'ID' => 'ID',
 				'isImported' => 'post_title'
 			);
 		} );
 
-		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( "0", $post_objects[1]['post_title'] );
 		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
@@ -321,9 +335,9 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 	/**
 	* @test
 	*/
-	public function parse_csv_to_post_objects_01()
+	public function get_post_objects_01()
 	{
-		$post_objects = \ACSV\Main::parse_csv_to_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/csv/simple.csv' );
 		$this->assertSame( "0", $post_objects[1]['post_meta']['isImported'] );
 		$this->assertSame( "19", $post_objects[2]['ID'] );
 	}
@@ -352,7 +366,7 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 		/*
 		 * sjis multibytes and CRLF
 		 */
-		add_filter( 'advanced_csv_importer_csv_format', function( $format ){
+		add_filter( 'acsv_csv_format', function( $format ){
 			$format['from_charset'] = 'SJIS-win';
 			return $format;
 		} );

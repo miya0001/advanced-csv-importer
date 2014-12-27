@@ -38,7 +38,7 @@ class Cli extends WP_CLI_Command {
 			} );
 		}
 
-		$post_objects = Main::parse_csv_to_post_objects( $args[0] );
+		$post_objects = Main::get_post_objects( $args[0] );
 
 		if ( is_wp_error( $post_objects ) ) {
 			WP_CLI::error( $post_objects->get_error_message() );
@@ -82,7 +82,7 @@ class Cli extends WP_CLI_Command {
 	{
 		$posts = Main::post_ids_to_posts( $inserted_posts );
 
-		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Date' ) );
+		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Author', 'Date' ) );
 
 		$fail    = Main::get_num_fail( $inserted_posts );
 

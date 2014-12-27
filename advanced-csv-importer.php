@@ -32,7 +32,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	$advanced_csv_importer = new ACSV\Importer();
 	register_importer(
 		'advanced-csv-importer',
-		__('CSV', 'advanced-csv-importer'),
+		__('Advanced CSV Importer', 'advanced-csv-importer'),
 		__('Import posts, categories, tags, custom fields from simple csv file.', 'advanced-csv-importer'),
 		array (
 			$advanced_csv_importer,
