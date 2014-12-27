@@ -230,7 +230,7 @@ class Importer extends \WP_Importer {
 		echo '</tr></thead>';
 		foreach ( $posts as $p ) {
 			printf(
-				'<tr><th scope="row" class="check-column"><input type="checkbox" name="acsv-import-id[]" value="%s" /></th><td class="post-title page-title column-title"><a href="post.php?post=%s&action=edit">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+				'<tr><th scope="row" class="check-column"><input type="checkbox" name="acsv-import-id[]" value="%s" /></th><td class="post-title page-title column-title"><a href="post.php?post=%s&action=edit" target="_blank">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
 				$p['ID'],
 				$p['ID'],
 				$p['Title'],

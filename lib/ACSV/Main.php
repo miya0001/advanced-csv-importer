@@ -242,7 +242,8 @@ class Main {
 
 			// setup author
 			if ( isset( $post['post_author'] ) && ! intval( $post['post_author'] ) ) {
-				$u = get_user_by( 'login', $post['post_author'] );
+				$field = apply_filters( 'acsv_get_user_by_field', 'login' );
+				$u = get_user_by( $field, $post['post_author'] );
 				if ( $u ) {
 					$post['post_author'] = $u->ID;
 				} else {
@@ -360,6 +361,7 @@ class Main {
 		$lexer = new Lexer( $config );
 
 		$interpreter = new Interpreter();
+		$interpreter->unstrict();
 		$interpreter->addObserver( function( array $row ) use ( &$csv ) {
 			$csv[] = $row;
 		} );
