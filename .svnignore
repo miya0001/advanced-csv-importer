@@ -7,3 +7,4 @@ composer.json
 composer.lock
 phpunit.xml
 assets
+README.md
