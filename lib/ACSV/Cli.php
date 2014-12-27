@@ -61,13 +61,19 @@ class Cli extends WP_CLI_Command {
 	 */
 	function log( $args, $assoc_args )
 	{
+		if ( isset( $assoc_args['format'] ) ) {
+			$format = $assoc_args['format'];
+		} else {
+			$format = 'table';
+		}
+
 		if ( isset( $args[0] ) && $args[0] ) {
 			$ids = Main::get_imported_post_ids( $args[0] );
 			if ( $ids ) {
-				if ( 'ids' === $assoc_args['format'] ) {
+				if ( 'ids' === $format ) {
 					echo implode( ' ', $ids );
 				} else {
-					$this->get_imported_data( $ids, $assoc_args['format'] );
+					$this->get_imported_data( $ids, $format );
 				}
 			} else {
 				WP_CLI::warning( 'Not found.' );

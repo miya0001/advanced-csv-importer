@@ -1,0 +1,18 @@
+{
+    "name": "miya0001/advanced-csv-importer",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Takayuki Miyauchi",
+            "email": "miyauchi@digitalcube.jp"
+        }
+    ],
+    "require": {
+        "php" : ">=5.3.2",
+        "goodby/csv": "*",
+        "megumi/wp-post-helper": "*"
+    },
+    "autoload": {
+        "psr-0": {"ACSV": "lib"}
+    }
+}
