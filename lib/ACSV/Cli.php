@@ -90,7 +90,7 @@ class Cli extends WP_CLI_Command {
 	 * @param  array $inserted_posts An array of the post ids
 	 * @return none
 	 */
-	private function get_imported_data( $inserted_posts, $format )
+	private function get_imported_data( $inserted_posts, $format = 'table' )
 	{
 		$posts = Main::post_ids_to_posts( $inserted_posts );
 
