@@ -68,12 +68,12 @@ class Config {
 	}
 
 	/**
-	* Returns the post object keys.
-	*
-	* @param  none
-	* @return array Returns post object keys for wp_insert_post() as array.
-	* @since  0.1.0
-	*/
+	 * Returns the post object keys.
+	 *
+	 * @param  none
+	 * @return array Returns post object keys for wp_insert_post() as array.
+	 * @since  0.1.0
+	 */
 	public static function get_post_object_keys()
 	{
 		$keys = self::$post_object_keys;
@@ -92,19 +92,19 @@ class Config {
 	}
 
 	/**
-	* Returns the post defaults.
-	*
-	* @param  none
-	* @return array Returns the post defaults.
-	* @since  0.1.0
-	*/
+	 * Returns the post defaults.
+	 *
+	 * @param  none
+	 * @return array Returns the post defaults.
+	 * @since  0.1.0
+	 */
 	public static function get_post_defaults()
 	{
 		/**
-		* Filter the post defaults.
-		*
-		* @param array $post_defaults The post defaults.
-		*/
+		 * Filter the post defaults.
+		 *
+		 * @param array $post_defaults The post defaults.
+		 */
 		return apply_filters( "acsv_post_defaults", self::$post_defaults );
 	}
 }
