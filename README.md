@@ -41,6 +41,8 @@ add_filter( 'acsv_post_object_keys', function( $post_object_keys ){
 } );
 ```
 
+Other columns will be saved to the custom field.
+
 ### Post thumbnail support
 
 ```
