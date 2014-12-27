@@ -1,0 +1,5 @@
+bin
+tests
+vendor
+.travis.yml
+phpunit.xml
