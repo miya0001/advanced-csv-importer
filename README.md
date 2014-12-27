@@ -49,6 +49,16 @@ $ wp csv log e0a66344
 +------+-----------------------+------+---------+------------+---------------------+
 ```
 
+### Delete imported posts
+
+```
+$ wp post delete $(wp csv log e0a66344 --format=ids)
+Success: Trashed post 1720.
+Success: Trashed post 1721.
+Success: Trashed post 1722.
+Success: Trashed post 1.
+```
+
 ## How to customize
 
 ### Default CSV field names

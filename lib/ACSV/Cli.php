@@ -56,13 +56,19 @@ class Cli extends WP_CLI_Command {
 	 * [<id>]
 	 * : The ID of the log.
 	 *
+	 * [--format=<format>]
+	 * : Accepted values: table, csv, json, count, ids. Default: table
 	 */
 	function log( $args, $assoc_args )
 	{
 		if ( isset( $args[0] ) && $args[0] ) {
 			$ids = Main::get_imported_post_ids( $args[0] );
 			if ( $ids ) {
-				$this->get_imported_data( $ids );
+				if ( 'ids' === $assoc_args['format'] ) {
+					echo implode( ' ', $ids );
+				} else {
+					$this->get_imported_data( $ids, $assoc_args['format'] );
+				}
 			} else {
 				WP_CLI::warning( 'Not found.' );
 			}
@@ -78,11 +84,11 @@ class Cli extends WP_CLI_Command {
 	 * @param  array $inserted_posts An array of the post ids
 	 * @return none
 	 */
-	private function get_imported_data( $inserted_posts )
+	private function get_imported_data( $inserted_posts, $format )
 	{
 		$posts = Main::post_ids_to_posts( $inserted_posts );
 
-		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Author', 'Date' ) );
+		WP_CLI\Utils\format_items( $format, $posts, array( 'ID', 'Title', 'Type', 'Status', 'Author', 'Date' ) );
 
 		$fail = Main::get_num_fail( $inserted_posts );
 
