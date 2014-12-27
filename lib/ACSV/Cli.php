@@ -23,7 +23,7 @@ class Cli extends WP_CLI_Command {
 	 * ## OPTIONS
 	 *
 	 * <file>
-	 * : The name of the CSV file to import. If '-', then reads from STDIN.
+	 * : The name of the CSV file to import.
      *
 	 * [--charset=<charset>]
 	 * : Character set of the CSV file. Defaults to UTF-8.
@@ -84,7 +84,7 @@ class Cli extends WP_CLI_Command {
 
 		WP_CLI\Utils\format_items( 'table', $posts, array( 'ID', 'Title', 'Type', 'Status', 'Author', 'Date' ) );
 
-		$fail    = Main::get_num_fail( $inserted_posts );
+		$fail = Main::get_num_fail( $inserted_posts );
 
 		if ( $fail ) {
 			WP_CLI::warning( 'Failed to import: ' . $fail );

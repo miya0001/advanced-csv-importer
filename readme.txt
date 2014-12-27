@@ -13,6 +13,8 @@ Import posts, pages, custom fields, categories, tags and more from a CSV file.
 
 The Advanced CSV Importer will import the following content from a CSV file.
 
+Advanced CSV Importer is fully unit-tested. The plugin is stable and ready to be used in large projects like enterprise applications.
+
 * Posts, pages and other custom post types
 * Custom fields and post meta
 * Categories, tags

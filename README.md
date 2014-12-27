@@ -4,6 +4,8 @@
 
 Import posts, pages, custom fields, categories, tags and more from a CSV file.
 
+Advanced CSV Importer is fully unit-tested. The plugin is stable and ready to be used in large projects like enterprise applications.
+
 ## WP-CLI support
 
 ### Importing CSV
