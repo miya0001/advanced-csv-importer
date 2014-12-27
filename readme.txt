@@ -36,6 +36,7 @@ This plugin requires PHP 5.3 or later.
 * acsv_after_get_post_objects
 * acsv_csv_format
 * acsv_csv_to_hash_array
+* acsv_get_user_by_field
 
 == Installation ==
 
