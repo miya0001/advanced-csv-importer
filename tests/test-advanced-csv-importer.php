@@ -3,6 +3,66 @@
 class AdvancedImporter_Test extends WP_UnitTestCase {
 
 	/**
+	 * Test for the sjis csv
+	 *
+	 * @test
+	 */
+	public function sjis()
+	{
+		add_filter( 'acsv_csv_format', function( $format ){
+			$format['from_charset'] = 'SJIS-win';
+			return $format;
+		} );
+
+		add_filter( 'acsv_post_object_keys', function( $post_object_keys ){
+			$post_object_keys['名前'] = 'post_title';
+			$post_object_keys['住所'] = 'post_content';
+			return $post_object_keys;
+		} );
+
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/csv/multibytes-sjis.csv' );
+		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
+
+		$this->assertSame( '太田 三子', get_post( $inserted_posts[2] )->post_title );
+	}
+
+	/**
+	 * Test for the post thumbnail
+	 *
+	 * @test
+	 */
+	public function post_thumbnail()
+	{
+		add_action( 'acsv_after_insert_post', function( $post_id, $post, $helper ){
+			$id = $helper->add_media( $post['post_meta']['post_thumbnail'] );
+			update_post_meta( $post_id, '_thumbnail_id', $id );
+		}, 10, 3 );
+
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/wp/import_thumbnail.csv' );
+		$inserted_posts = \ACSV\Main::insert_posts( $post_objects );
+
+		$this->assertTrue( has_post_thumbnail( $inserted_posts[0] ) );
+	}
+
+	/**
+	 * Test for the action hook `acsv_post_object_keys`
+	 *
+	 * @test
+	 */
+	public function get_post_objects()
+	{
+		add_filter( 'acsv_post_object_keys', function( $post_object_keys ){
+			$post_object_keys['col1'] = 'post_title';
+			$post_object_keys['col2'] = 'post_content';
+			return $post_object_keys;
+		} );
+
+		$post_objects = \ACSV\Main::get_post_objects( dirname( __FILE__ ) . '/_data/csv/escaping.csv' );
+		$this->assertSame( 'line without enclosure', $post_objects[0]['post_title'] );
+		$this->assertSame( 'second column', $post_objects[0]['post_content'] );
+	}
+
+	/**
 	 * Test for the action hook `acsv_get_post_objects`
 	 *
 	 * @test

@@ -265,7 +265,7 @@ class Main {
 			$helper = new \Megumi\WP\Post\Helper( $post );
 			$post_id = $helper->insert();
 
-			do_action( 'acsv_after_insert_post', $post_id, $post );
+			do_action( 'acsv_after_insert_post', $post_id, $post, $helper );
 
 			$inserted_posts[] = $post_id;
 		}

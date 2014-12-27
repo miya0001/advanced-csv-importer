@@ -19,6 +19,8 @@ The Advanced CSV Importer will import the following content from a CSV file.
 
 https://github.com/miya0001/advanced-csv-importer
 
+This plugin requires PHP 5.3 or later.
+
 = Action Hooks
 
 * acsv_after_insert_post
