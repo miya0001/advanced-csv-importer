@@ -231,13 +231,13 @@ class Importer extends \WP_Importer {
 		foreach ( $posts as $p ) {
 			printf(
 				'<tr><th scope="row" class="check-column"><input type="checkbox" name="acsv-import-id[]" value="%s" /></th><td class="post-title page-title column-title"><a href="post.php?post=%s&action=edit" target="_blank">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-				$p['ID'],
-				$p['ID'],
-				$p['Title'],
-				$p['Type'],
-				$p['Status'],
-				$p['Author'],
-				$p['Date']
+				esc_attr( $p['ID'] ),
+				esc_attr( $p['ID'] ),
+				esc_html( $p['Title'] ),
+				esc_html( $p['Type'] ),
+				esc_html( $p['Status'] ),
+				esc_html( $p['Author'] ),
+				esc_html( $p['Date'] )
 			);
 		}
 		echo '</table>';

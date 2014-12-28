@@ -51,7 +51,7 @@ e.g.
 == Screenshots ==
 
 1. Tools Import Screen
-2. The result of an import
+2. The result of an importing
 3. History of importing
 
 == Changelog ==
