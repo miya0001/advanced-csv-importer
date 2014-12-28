@@ -24,7 +24,7 @@ class Cli extends WP_CLI_Command {
 	 *
 	 * <file>
 	 * : The name of the CSV file to import.
-     *
+	 *
 	 * [--charset=<charset>]
 	 * : Character set of the CSV file. Defaults to UTF-8.
 	 *
