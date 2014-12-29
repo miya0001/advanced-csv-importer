@@ -1,6 +1,6 @@
 <?php
 
-namespace ACSV;
+namespace ACSV\Defaults;
 
 class Config {
 

@@ -211,8 +211,8 @@ class Main {
 	/**
 	 * Insert posts
 	 *
-	 * @param  string $post_objects    Path of the file.
-	 * @return mixed  True or WP_Eroor object.
+	 * @param  array $post_objects Array of the post objects.
+	 * @return array The post id or WP_Error object.
 	 * @since  0.1.0
 	 */
 	public static function insert_posts( $post_objects )
@@ -220,59 +220,74 @@ class Main {
 		$inserted_posts = array();
 
 		foreach ( $post_objects as $post ) {
-
-			// unset all empty fields
-			foreach ( $post as $key => $value ) {
-				if ( ! is_array( $value ) && ! strlen( $value ) ) {
-					unset( $post[ $key ] );
-				} elseif ( is_array( $value ) && ! count( $value ) ) {
-					unset( $post[ $key ] );
-				}
-			}
-
-			// insert and set category
-			if ( isset( $post['post_category'] ) && is_array( $post['post_category'] )
-						&& count( $post['post_category'] ) ) {
-				$post['post_category'] = wp_create_categories( $post['post_category'] );
-			}
-
-			if ( isset( $post['post_date'] ) && $post['post_date'] ) {
-				$post['post_date'] = date( "Y-m-d H:i:s", strtotime( $post['post_date'] ) );
-			}
-
-			// setup author
-			if ( isset( $post['post_author'] ) && ! intval( $post['post_author'] ) ) {
-				$field = apply_filters( 'acsv_get_user_by_field', 'login' );
-				$u = get_user_by( $field, $post['post_author'] );
-				if ( $u ) {
-					$post['post_author'] = $u->ID;
-				} else {
-					unset( $post['post_author'] );
-				}
-			}
-
-			// setup post ID
-			if ( isset( $post['ID'] ) && ! intval( $post['ID'] ) ) {
-				unset( $post['ID'] );
-			}
-
-			// set default to the post.
-			foreach ( Config::get_post_defaults() as $key => $value ) {
-				if ( ! isset( $post[ $key ] ) ) {
-					$post[ $key ] = $value;
-				}
-			}
-
-			$helper = new \Megumi\WP\Post\Helper( $post );
-			$post_id = $helper->insert();
-
-			do_action( 'acsv_after_insert_post', $post_id, $post, $helper );
-
+			$post_id = self::insert_post( $post );
 			$inserted_posts[] = $post_id;
 		}
 
 		self::save_history( $inserted_posts );
 		return $inserted_posts;
+	}
+
+	/**
+	 * Insert post
+	 *
+	 * @param  array $post_object The post object.
+	 * @return mixed The post id or WP_Error object.
+	 * @since  0.1.0
+	 */
+	public static function insert_post( $post )
+	{
+		// unset all empty fields
+		foreach ( $post as $key => $value ) {
+			if ( ! is_array( $value ) && ! strlen( $value ) ) {
+				unset( $post[ $key ] );
+			} elseif ( is_array( $value ) && ! count( $value ) ) {
+				unset( $post[ $key ] );
+			}
+		}
+
+		// insert and set category
+		if ( isset( $post['post_category'] ) && is_array( $post['post_category'] )
+		&& count( $post['post_category'] ) ) {
+			$post['post_category'] = wp_create_categories( $post['post_category'] );
+		}
+
+		if ( isset( $post['post_date'] ) && $post['post_date'] ) {
+			$post['post_date'] = date( "Y-m-d H:i:s", strtotime( $post['post_date'] ) );
+		}
+
+		// setup author
+		if ( isset( $post['post_author'] ) && ! intval( $post['post_author'] ) ) {
+			$field = apply_filters( 'acsv_get_user_by_field', 'login' );
+			$u = get_user_by( $field, $post['post_author'] );
+			if ( $u ) {
+				$post['post_author'] = $u->ID;
+			} else {
+				unset( $post['post_author'] );
+			}
+		}
+
+		// setup post ID
+		if ( isset( $post['ID'] ) && ! intval( $post['ID'] ) ) {
+			unset( $post['ID'] );
+		}
+
+		// set default to the post.
+		foreach ( Defaults\Config::get_post_defaults() as $key => $value ) {
+			if ( ! isset( $post[ $key ] ) ) {
+				$post[ $key ] = $value;
+			}
+		}
+
+		$helper = new \Megumi\WP\Post\Helper( $post );
+		$post_id = $helper->insert();
+
+		if ( is_wp_error( $post_id ) ) {
+			return $post_id;
+		} else {
+			do_action( 'acsv_after_insert_post', $post_id, $post, $helper );
+			return $post_id;
+		}
 	}
 
 	/**
@@ -293,7 +308,7 @@ class Main {
 			return $csv;
 		}
 
-		$post_object_keys = Config::get_post_object_keys();
+		$post_object_keys = Defaults\Config::get_post_object_keys();
 
 		$post_objects = array();
 		foreach ( $csv as $row ) {
