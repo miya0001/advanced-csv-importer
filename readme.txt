@@ -3,7 +3,7 @@ Contributors: miyauchi, megumithemes
 Tags: comments, spam
 Requires at least: 4.0
 Tested up to: 4.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,11 +23,11 @@ https://github.com/miya0001/advanced-csv-importer
 
 This plugin requires PHP 5.3 or later.
 
-= Action Hooks
+= Action Hooks =
 
 * acsv_after_insert_post
 
-= Filter Hooks
+= Filter Hooks =
 
 * acsv_post_object_keys
 * acsv_post_defaults

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Advanced CSV Importer
-Version: 0.1.0
-Description: PLUGIN DESCRIPTION HERE
-Author: YOUR NAME HERE
-Author URI: YOUR SITE HERE
-Plugin URI: PLUGIN SITE HERE
+Version: 0.1.1
+Description: Import posts, pages, custom fields, categories, tags and more from a CSV file.
+Author: Takayuki Miyauchi
+Author URI: https://github.com/miya0001/
+Plugin URI: https://github.com/miya0001/advanced-csv-importer
 Text Domain: advanced-csv-importer
 Domain Path: /languages
 */
