@@ -42,7 +42,7 @@ This plugin requires PHP 5.3 or later.
 
 Importing:
 
-{{{
+```
 $ wp csv import tests/_data/wp/sample.csv
 +------+-----------------------+------+---------+------------+---------------------+
 | ID   | Title                 | Type | Status  | Author     | Date                |
@@ -52,11 +52,11 @@ $ wp csv import tests/_data/wp/sample.csv
 | 1722 | define author id test | post | publish | themedemos | 2014-12-27 18:44:46 |
 | 1    | Hello world! Updated! | post | publish | admin      | 2014-12-27 18:44:46 |
 +------+-----------------------+------+---------+------------+---------------------+
-}}}
+```
 
 History:
 
-{{{
+```
 $ wp csv log
 +----------+-----------------------------+---------------------+---------+---------+
 | ID       | Title                       | Date                | Success | Failure |
@@ -65,11 +65,11 @@ $ wp csv log
 | 43c47af6 | Imported from admin screen. | 2014-12-27 16:53:17 |       4 |       0 |
 | df0f140b | Imported from WP-CLI.       | 2014-12-27 16:21:42 |       4 |       0 |
 +----------+-----------------------------+---------------------+---------+---------+
-}}}
+```
 
 Details of the history:
 
-{{{
+```
 $ wp csv log e0a66344
 +------+-----------------------+------+---------+------------+---------------------+
 | ID   | Title                 | Type | Status  | Author     | Date                |
@@ -79,7 +79,7 @@ $ wp csv log e0a66344
 | 1722 | define author id test | post | publish | themedemos | 2014-12-27 18:44:46 |
 | 1    | Hello world! Updated! | post | publish | admin      | 2014-12-27 18:44:46 |
 +------+-----------------------+------+---------+------------+---------------------+
-}}}
+```
 
 == Installation ==
 
