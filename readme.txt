@@ -38,6 +38,49 @@ This plugin requires PHP 5.3 or later.
 * acsv_csv_to_hash_array
 * acsv_get_user_by_field
 
+= WP-CLI =
+
+Importing:
+
+{{{
+$ wp csv import tests/_data/wp/sample.csv
++------+-----------------------+------+---------+------------+---------------------+
+| ID   | Title                 | Type | Status  | Author     | Date                |
++------+-----------------------+------+---------+------------+---------------------+
+| 1720 | CSV Import Test       | post | publish | admin      | 2013-09-13 00:00:00 |
+| 1721 | define author test    | post | publish | admin      | 2014-12-27 18:44:46 |
+| 1722 | define author id test | post | publish | themedemos | 2014-12-27 18:44:46 |
+| 1    | Hello world! Updated! | post | publish | admin      | 2014-12-27 18:44:46 |
++------+-----------------------+------+---------+------------+---------------------+
+}}}
+
+History:
+
+{{{
+$ wp csv log
++----------+-----------------------------+---------------------+---------+---------+
+| ID       | Title                       | Date                | Success | Failure |
++----------+-----------------------------+---------------------+---------+---------+
+| e0a66344 | Imported from WP-CLI.       | 2014-12-27 18:44:46 |       4 |       0 |
+| 43c47af6 | Imported from admin screen. | 2014-12-27 16:53:17 |       4 |       0 |
+| df0f140b | Imported from WP-CLI.       | 2014-12-27 16:21:42 |       4 |       0 |
++----------+-----------------------------+---------------------+---------+---------+
+}}}
+
+Details of the history:
+
+{{{
+$ wp csv log e0a66344
++------+-----------------------+------+---------+------------+---------------------+
+| ID   | Title                 | Type | Status  | Author     | Date                |
++------+-----------------------+------+---------+------------+---------------------+
+| 1720 | CSV Import Test       | post | publish | admin      | 2013-09-13 00:00:00 |
+| 1721 | define author test    | post | publish | admin      | 2014-12-27 18:44:46 |
+| 1722 | define author id test | post | publish | themedemos | 2014-12-27 18:44:46 |
+| 1    | Hello world! Updated! | post | publish | admin      | 2014-12-27 18:44:46 |
++------+-----------------------+------+---------+------------+---------------------+
+}}}
+
 == Installation ==
 
 This section describes how to install the plugin and get it working.
