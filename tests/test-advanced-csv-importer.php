@@ -234,11 +234,11 @@ class AdvancedImporter_Test extends WP_UnitTestCase {
 			$this->assertSame( "1", $post->post_author, $posts[ $i ]['post_author'] . ' should be 1.' );
 		}
 
-		$logs = \ACSV\Main::get_history();
+		$logs = \ACSV\History::get_history();
 		$this->assertEquals( 1, count( $logs ) );
 
-		$log_name = \ACSV\Main::get_log_name( $inserted_posts );
-		$log = \ACSV\Main::get_imported_post_ids( $log_name );
+		$log_name = \ACSV\History::get_log_name( $inserted_posts );
+		$log = \ACSV\History::get_imported_post_ids( $log_name );
 		$this->assertEquals( 3, count( $log ) );
 	}
 

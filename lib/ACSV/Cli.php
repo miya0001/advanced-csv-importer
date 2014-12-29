@@ -68,7 +68,7 @@ class Cli extends WP_CLI_Command {
 		}
 
 		if ( isset( $args[0] ) && $args[0] ) {
-			$ids = Main::get_imported_post_ids( $args[0] );
+			$ids = History::get_imported_post_ids( $args[0] );
 			if ( $ids ) {
 				if ( 'ids' === $format ) {
 					echo implode( ' ', $ids );
@@ -79,7 +79,7 @@ class Cli extends WP_CLI_Command {
 				WP_CLI::warning( 'Not found.' );
 			}
 		} else {
-			$history = Main::get_history( true );
+			$history = History::get_history( true );
 			WP_CLI\Utils\format_items( 'table', $history, array( 'ID', 'Title', 'Date', 'Success', 'Failure' ) );
 		}
 	}
@@ -92,11 +92,11 @@ class Cli extends WP_CLI_Command {
 	 */
 	private function get_imported_data( $inserted_posts, $format = 'table' )
 	{
-		$posts = Main::post_ids_to_posts( $inserted_posts );
+		$posts = History::post_ids_to_posts( $inserted_posts );
 
 		WP_CLI\Utils\format_items( $format, $posts, array( 'ID', 'Title', 'Type', 'Status', 'Author', 'Date' ) );
 
-		$fail = Main::get_num_fail( $inserted_posts );
+		$fail = History::get_num_fail( $inserted_posts );
 
 		if ( $fail ) {
 			WP_CLI::warning( 'Failed to import: ' . $fail );

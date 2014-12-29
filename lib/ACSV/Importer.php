@@ -24,7 +24,7 @@ class Importer extends \WP_Importer {
 				break;
 			case 2:
 				if ( isset( $_GET['import-id'] ) ) {
-					$inserted_posts = Main::get_imported_post_ids( $_GET['import-id'] );
+					$inserted_posts = History::get_imported_post_ids( $_GET['import-id'] );
 				} else {
 					check_admin_referer( 'acsv-import-upload' );
 					set_time_limit( 0 );
@@ -130,7 +130,7 @@ class Importer extends \WP_Importer {
 		<h3>History</h3>
 		<?php
 
-		$history = Main::get_history();
+		$history = History::get_history();
 		?>
 		<table class="wp-list-table widefat fixed posts">
 			<thead><tr style="color: #dedede;">
@@ -200,14 +200,14 @@ class Importer extends \WP_Importer {
 
 	private function delete_form( $inserted_posts )
 	{
-		$posts   = Main::post_ids_to_posts( $inserted_posts );
+		$posts   = History::post_ids_to_posts( $inserted_posts );
 		if ( ! $posts ) {
 			echo '<p>Posts were already deleted.</p>';
 			return;
 		}
 
-		$success = Main::get_num_success( $inserted_posts );
-		$fail    = Main::get_num_fail( $inserted_posts );
+		$success = History::get_num_success( $inserted_posts );
+		$fail    = History::get_num_fail( $inserted_posts );
 
 		echo '<p>';
 		if ( $success === 1 ) {
