@@ -43,20 +43,6 @@ class Main {
 	}
 
 	/**
-	 * Register post-type for import.
-	 *
-	 * @param  none
-	 * @return none
-	 * @since  0.1.0
-	 */
-	public static function init()
-	{
-		// Register default actions to the hooks
-		add_action( 'acsv_after_insert_post', array( 'ACSV\Defaults\Actions', 'add_post_meta' ), 10, 2 );
-		add_action( 'acsv_after_insert_post', array( 'ACSV\Defaults\Actions', 'set_tags' ), 10, 2 );
-	}
-
-	/**
 	 * Insert posts
 	 *
 	 * @param  array $post_objects Array of the post objects.
