@@ -23,6 +23,47 @@ https://github.com/miya0001/advanced-csv-importer
 
 This plugin requires PHP 5.3 or later.
 
+= Default CSV field names =
+
+* ID
+* post_content
+* post_name
+* post_title
+* post_status
+* post_type
+* post_author
+* ping_status
+* post_parent
+* menu_order
+* to_ping
+* pinged
+* post_password
+* guid
+* post_content_filtered
+* post_excerpt
+* post_date
+* post_date_gmt
+* comment_status
+* post_category
+* tags_input
+* page_template
+
+You can change field name via `acsv_post_object_keys` hook like following.
+
+```
+add_filter( 'acsv_post_object_keys', function( $post_object_keys ){
+    $post_object_keys['title'] = 'post_title';
+    $post_object_keys['content'] = 'post_content';
+    return $post_object_keys;
+} );
+```
+
+Other columns will be saved to the custom field.
+
+There is a sample of the CSV.
+
+https://gist.github.com/miya0001/06f1a8e2bf1789c7ddee
+
 = Action Hooks =
 
 * acsv_after_insert_post
