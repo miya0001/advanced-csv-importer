@@ -3,7 +3,7 @@ Contributors: miyauchi, megumithemes
 Tags: csv, import, wp-cli
 Requires at least: 4.0
 Tested up to: 4.1
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,13 +50,13 @@ This plugin requires PHP 5.3 or later.
 
 You can change field name via `acsv_post_object_keys` hook like following.
 
-```
+`
 add_filter( 'acsv_post_object_keys', function( $post_object_keys ){
     $post_object_keys['title'] = 'post_title';
     $post_object_keys['content'] = 'post_content';
     return $post_object_keys;
 } );
-```
+`
 
 Other columns will be saved to the custom field.
 
