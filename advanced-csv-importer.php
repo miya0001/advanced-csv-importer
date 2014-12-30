@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Advanced CSV Importer
-Version: 0.1.2
+Version: 0.1.3
 Description: Import posts, pages, custom fields, categories, tags and more from a CSV file.
 Author: Takayuki Miyauchi
 Author URI: https://github.com/miya0001/
